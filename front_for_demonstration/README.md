@@ -1,4 +1,4 @@
-# football_research
+# Websocket front cinema together
 
 ## Project setup
 ```
