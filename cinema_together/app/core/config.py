@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     REDIS_PORT: int = os.getenv('REDIS_PORT', '6379')
 
     AUTH_URL: str = os.getenv('AUTH_URL', 'http://localhost:8888')
+    SECRET: str = os.getenv('SECRET', 'asdcasdvsdfbsgbdfgbsdfva343')
+    ALGORITHM: str = os.getenv('ALGORITHM', 'HS256')
 
     @property
     def pg_dsn(self):

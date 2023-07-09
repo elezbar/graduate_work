@@ -1,3 +1,4 @@
+import jwt
 import orjson
 
 from uuid import UUID
@@ -44,3 +45,16 @@ async def set_cached_message(chatroom, message):
     rd = get_redis()
     redis = Redis(rd)
     await redis.set(f'{chatroom}-007', message)
+
+
+def decode_token(token: str) -> dict | bool:
+    """Расшифровка токена в словарь."""
+    try:
+        decoded: dict = jwt.decode(jwt=token, key=settings.SECRET, algorithms=[settings.ALGORITHM])
+        return decoded
+    except (
+        jwt.exceptions.ImmatureSignatureError,
+        jwt.exceptions.ExpiredSignatureError,
+        jwt.exceptions.InvalidSignatureError,
+    ):
+        return False
