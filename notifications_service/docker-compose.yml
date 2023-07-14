@@ -1,0 +1,76 @@
+version: "3.2"
+services:
+
+  api_notifications:
+    build: api_notifications
+    container_name: api_notifications
+    image: api_notifications_image
+    restart: always
+    depends_on:
+      - rabbitmq
+      - db
+    volumes:
+      - ./api_notifications:/opt/app
+    env_file:
+      - ./.env
+    ports:
+      - 8000:8000
+
+  worker:
+    build: worker
+    container_name: worker
+    restart: always
+    depends_on:
+      - db
+      - rabbitmq
+      - api_notifications
+    env_file:
+      - ./.env
+    volumes:
+      - ./worker:/worker
+    ports:
+      - 5678:5678 
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    hostname: 'rabbitmq'
+    container_name: 'rabbitmq'
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  db:
+    image: postgres:13-alpine3.16
+    container_name: 'db'
+    hostname: 'db'
+    restart: always
+    env_file:
+      - ./.env
+    # volumes:
+    #   - pgdata:/var/lib/postgresql/data
+    #   - ./database.ddl:/database.ddl
+    ports:
+      - 5432:5432
+
+  # celery:
+  #   build: sheduler
+  #   container_name: sheduler
+  #   restart: always
+  #   depends_on:
+  #     - db
+  #     - rabbitmq
+  #     - api_notifications
+  #   env_file:
+  #     - ./.env
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+volumes:
+  pgdata:
