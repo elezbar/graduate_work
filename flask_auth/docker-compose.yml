@@ -1,0 +1,48 @@
+version: '3'
+services:
+
+
+  auth_db:
+    container_name: auth_db
+    image: postgres:13-alpine3.16
+    hostname: db
+    env_file:
+      - ./.env
+    restart: always
+    expose:
+      - '5432'
+    ports:
+      - '5432:5432'
+
+  my_redis:
+    image: redis:7.0.5
+    container_name: my_redis
+    hostname: redis
+    restart: always
+    expose:
+      - "6379"
+
+  flask_auth:
+    build: .
+    container_name: flask_auth
+    restart: always
+    depends_on:
+      - auth_db
+      - my_redis
+    volumes:
+      - ./src:/opt/app/src
+    env_file:
+      - ./.env
+
+  nginx_serve:
+    build: ./nginx
+    container_name: nginx_serve
+    restart: always
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/site.conf:/etc/nginx/conf.d/site.conf
+      - ./nginx/data:/data/
+    depends_on:
+      - flask_auth
+    ports:
+      - "80:80"

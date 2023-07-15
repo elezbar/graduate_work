@@ -10,8 +10,8 @@ logging_config.dictConfig(LOGGING)
 
 
 class Settings(BaseSettings):
-    host: str = Field('0.0.0.0', env='HOST')
-    port: int = Field(8000, env='PORT')
+    host: str = Field('0.0.0.0', env='NOTIFY_HOST')
+    port: int = Field(8002, env='NOTIFY_PORT')
     project_name: str = Field('notification', env='PROJECT_NAME')
     name_instant_queues: str = Field('INSTANT_QUEUE', env='NAME_INSTANT_QUEUE')
     name_delayed_queues: str = Field('DELAYED_QUEUE', env='NAME_DELAYED_QUEUE')

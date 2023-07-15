@@ -1,0 +1,42 @@
+version: '3'
+services:
+
+  db:
+    container_name: db
+    hostname: 'db'
+    image: postgres:13-alpine3.16
+    env_file:
+      - ./.env
+    volumes:
+    - dbdata:/var/lib/postgresql/data
+    restart: always
+    expose:
+      - '5432'
+
+  redis:
+    image: redis:7.0.5
+    container_name: redis
+    hostname: redis
+    restart: always
+    expose:
+      - "6379"
+
+  cinema_together:
+    build: .
+    container_name: cinema
+    hostname: 'cinema'
+    restart: always
+    depends_on:
+      - db
+      - redis
+    # volumes:
+    # - ./cinema_together/app:/opt/app
+    env_file:
+      - ./.env
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+
+volumes:
+  dbdata:

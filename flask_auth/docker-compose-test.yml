@@ -1,0 +1,35 @@
+version: '3'
+services:
+
+  auth_db:
+    container_name: auth_db
+    image: postgres:13-alpine3.16
+    env_file:
+      - ./.env
+    restart: always
+    expose:
+      - '5432'
+    ports:
+      - '5432:5432'
+
+  redis:
+    image: redis:7.0.5
+    container_name: redis
+    restart: always
+    expose:
+      - "6379"
+
+  flask_auth:
+    build: .
+    container_name: flask_auth
+    command: >
+      bash -c "python ping.py && alembic upgrade head && flask utils_bp init_db && pytest"
+    depends_on:
+      - auth_db
+      - redis
+    volumes:
+      - ./src:/opt/app/src
+    env_file:
+      - ./.env
+    ports:
+      - '5000:5000'

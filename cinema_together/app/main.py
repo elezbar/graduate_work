@@ -40,7 +40,7 @@ app.include_router(
 @app.on_event('startup')
 async def startup() -> None:
     cache.redis = aioredis.from_url(
-        f'{settings.REDIS_HOST}:{settings.REDIS_PORT}'
+        f'redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}'
     )
     await broadcast.connect()
 
@@ -64,7 +64,8 @@ async def auth_middleware(request: Request, call_next):
         return await call_next(request)
     headers = request.headers
     async with aiohttp.ClientSession() as client:
-        resp = await client.get(settings.AUTH_URL, headers=headers)
+        # resp = await client.get(settings.AUTH_URL, headers=headers)
+        resp = await client.get('http://localhost:8001/api/v1/authorizate', headers=headers)
         if resp.status == 200:
             response = await call_next(request)
             return response
