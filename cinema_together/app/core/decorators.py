@@ -1,23 +1,27 @@
 import aiohttp
 import functools
+import json
 
 from fastapi import HTTPException, status
+
+from core.config import settings
 
 
 def login_required():
     def wrapper(func):
         @functools.wraps(func)
         async def inner(*args, **kwargs):
-            request = kwargs.get('request')
+            token = kwargs.get('Authorization')
             room = kwargs.get('room')
             payload = {
                 "RequestedObjTypes": "movie",
                 "RequestType": "get",
-                "RequestedObjId": room.film_id
+                "RequestedObjId": str(room.film_id)
             }
-            headers = request.headers
             async with aiohttp.ClientSession() as client:
-                resp = await client.post('http://127.0.0.1:8001/api/v1/authorizate', data=payload, headers=headers)
+                resp = await client.post(f'{settings.AUTH_URL}/authorizate', json=payload, headers={
+                    'Authorization': token
+                })
                 if resp.status == 200:
                     return await func(*args, **kwargs)
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,

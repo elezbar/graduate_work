@@ -120,7 +120,6 @@ class RequestParser(BaseRequestParser):
         """
         Extracting user roles from Payload.
         """
-        print(self.request)
         obj_types = self.request["RequestedObjTypes"]
         objs = session.query(PermissionObjectDB).filter(PermissionObjectDB.name.in_(obj_types))
         objs = session.execute(objs)
@@ -133,7 +132,6 @@ class RequestParser(BaseRequestParser):
         """
         Convert request method to CRUD.
         """
-        print(self.request)
         r_type = self.request["RequestType"]
         if r_type == "post":
             return CRUD.CREATE
@@ -168,9 +166,10 @@ class RequestParser(BaseRequestParser):
         Connects data from json and headers.
         """
         data = None
+        print('REQUEST', request)
         if request:
             data = request.get_json(force=False, silent=True)
-            print(data)
+            print('DATA', data)
         args = parser.parse_args()
         args["RequestedObjId"] = None
         if data:
@@ -188,6 +187,8 @@ class RequestParser(BaseRequestParser):
         if request_type:
             args["RequestType"] = request_type
         args["Entrypoint"] = entrypoint
+        print(data)
+        print('ARGS', args)
         return data, args
 
 

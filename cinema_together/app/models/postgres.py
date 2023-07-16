@@ -3,6 +3,7 @@ import uuid
 from sqlalchemy import (
     Column, String, DateTime, func, UUID, Boolean, ForeignKey, UniqueConstraint
 )
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -18,6 +19,7 @@ class Room(Base):
     created_at = Column(DateTime, server_default=func.now())
     active = Column(Boolean, default=True)
     room_link = Column(String)
+    members = Column(ARRAY(UUID(as_uuid=True)))
     room_users = relationship('RoomUser')
 
     __mapper_args__ = {'eager_defaults': True}

@@ -56,18 +56,6 @@ async def chatroom_ws(chatroom: str, websocket: WebSocket):
         (chatroom_ws_sender, {"websocket": websocket, 'chatroom': chatroom}),
     )
 
-# @app.middleware("http")
-# async def auth_middleware(request: Request, call_next):
-#     if request.url.path in [app.docs_url, app.openapi_url]:
-#         return await call_next(request)
-#     headers = request.headers
-#     async with aiohttp.ClientSession() as client:
-#         # resp = await client.get(settings.AUTH_URL, headers=headers)
-#         resp = await client.get('http://127.0.0.1:8001/api/v1/authorizate', headers=headers)
-#         if resp.status == 200:
-#             response = await call_next(request)
-#             return response
-#         return Response(status_code=HTTPStatus.UNAUTHORIZED)
 
 if __name__ == '__main__':
     uvicorn.run(

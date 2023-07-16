@@ -24,7 +24,7 @@ class RoomService:
                             class_=AsyncSession)()
 
     async def create_room(
-            self, room_id: UUID, user_id: str, link: str, film_id: UUID
+            self, room_id: UUID, user_id: str, link: str, film_id: UUID, members: list[UUID]
     ):
         async with self.get_session() as session:
             try:
@@ -33,7 +33,8 @@ class RoomService:
                         id=room_id,
                         creator_id=user_id,
                         film_id=film_id,
-                        room_link=link
+                        room_link=link,
+                        members=members
                     )
                     room_user = RoomUser(user_id=user_id,
                                          user_type=RoomUserType.creator.value)

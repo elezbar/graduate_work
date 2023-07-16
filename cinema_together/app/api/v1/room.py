@@ -2,7 +2,7 @@ import uuid
 
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPBearer
-from fastapi import Request
+from fastapi import Header, Request
 
 from core.decorators import login_required
 from models.scheme import RoomModel
@@ -17,8 +17,10 @@ bearer_token = HTTPBearer()
 @login_required()
 async def create_room(
         room: RoomModel,
+        Authorization: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service),
 ):
+    print(room)
     room_id = uuid.uuid4()
     link = create_room_link(room_id)
     error = await service.create_room(

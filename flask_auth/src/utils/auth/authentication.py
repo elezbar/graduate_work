@@ -25,7 +25,6 @@ class BaseAuthentication(ABC):
 class Authentication(BaseAuthentication):
     def __init__(self, request: dict, request_parser: Type[RequestParser] = RequestParser,
                  cache=Redis) -> None:
-        print(request)
         self.request = request
         self.request_parser = request_parser(request)
         self.payload: Payload | bool | None = None
@@ -37,6 +36,7 @@ class Authentication(BaseAuthentication):
         """
         if self.payload is None:
             self.payload = self.request_parser.get_payload_if_token_correct()
+        # print(self.payload)
         authrequest = self.request_parser.get_auth_request(self.payload)
         if authrequest.roles == [BaseRoles.ANONIMOUS.value]:
             self.payload = False

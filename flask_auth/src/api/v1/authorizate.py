@@ -45,6 +45,7 @@ class Authorizate(Resource):
         """
         try:
             _, args = RequestParser.request_pre_parser(request, parser, None, "api/v1/authorizate", None)
+            print(_, args)
             auth = Authentication(args)
             what_to_do = auth.authenticate()
             authorization = Authorization(what_to_do)
