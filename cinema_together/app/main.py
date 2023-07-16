@@ -1,4 +1,3 @@
-import aiohttp
 import logging
 from logging import config
 import uvicorn
@@ -7,11 +6,10 @@ from fastapi import FastAPI, Request, Response, Security, WebSocket
 from fastapi.concurrency import run_until_first_complete
 from fastapi.responses import ORJSONResponse
 from fastapi.security import APIKeyHeader
-from http import HTTPStatus
 from redis import asyncio as aioredis
 
 from api.v1 import room
-from api.v1.websocket.receiver import chatroom_ws_receiver
+from api.v1.websocket.receiver import chatroom_ws_receiver, chatroom_ws_receiver_test
 from api.v1.websocket.sender import chatroom_ws_sender
 from core import cache
 from core.broadcast import broadcast
@@ -54,22 +52,22 @@ async def shutdown() -> None:
 async def chatroom_ws(chatroom: str, websocket: WebSocket):
     await websocket.accept()
     await run_until_first_complete(
-        (chatroom_ws_receiver, {"websocket": websocket, 'chatroom': chatroom}),
+        (chatroom_ws_receiver_test, {"websocket": websocket, 'chatroom': chatroom}),
         (chatroom_ws_sender, {"websocket": websocket, 'chatroom': chatroom}),
     )
 
-@app.middleware("http")
-async def auth_middleware(request: Request, call_next):
-    if request.url.path in [app.docs_url, app.openapi_url]:
-        return await call_next(request)
-    headers = request.headers
-    async with aiohttp.ClientSession() as client:
-        # resp = await client.get(settings.AUTH_URL, headers=headers)
-        resp = await client.get('http://localhost:8001/api/v1/authorizate', headers=headers)
-        if resp.status == 200:
-            response = await call_next(request)
-            return response
-        return Response(status_code=HTTPStatus.UNAUTHORIZED)
+# @app.middleware("http")
+# async def auth_middleware(request: Request, call_next):
+#     if request.url.path in [app.docs_url, app.openapi_url]:
+#         return await call_next(request)
+#     headers = request.headers
+#     async with aiohttp.ClientSession() as client:
+#         # resp = await client.get(settings.AUTH_URL, headers=headers)
+#         resp = await client.get('http://127.0.0.1:8001/api/v1/authorizate', headers=headers)
+#         if resp.status == 200:
+#             response = await call_next(request)
+#             return response
+#         return Response(status_code=HTTPStatus.UNAUTHORIZED)
 
 if __name__ == '__main__':
     uvicorn.run(

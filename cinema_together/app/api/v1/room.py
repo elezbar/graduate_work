@@ -5,6 +5,7 @@ from fastapi.security import HTTPBearer
 from fastapi import Request
 
 from core.decorators import login_required
+from models.scheme import RoomModel
 from services.room import RoomService, get_room_service
 from services.utils import create_room_link
 
@@ -15,24 +16,24 @@ bearer_token = HTTPBearer()
 @router.post('/')
 @login_required()
 async def create_room(
-        request: Request,
+        room: RoomModel,
         service: RoomService = Depends(get_room_service),
 ):
     room_id = uuid.uuid4()
-    film_id = uuid.uuid4()
     link = create_room_link(room_id)
     error = await service.create_room(
         room_id=room_id,
-        user_id=request.user.pk,
+        user_id=room.creator_id,
         link=link,
-        film_id=film_id
+        film_id=room.film_id,
+        members=room.members
     )
     if error:
         return {'success': False, 'errors': list(error)}
     return {'success': True, 'link': link}
 
 
-@router.get('/{room_id}/connect')
+@router.get('/{room_id}/join')
 @login_required()
 async def join_user(
         request: Request,

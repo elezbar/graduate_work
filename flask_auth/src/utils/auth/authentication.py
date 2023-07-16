@@ -25,6 +25,7 @@ class BaseAuthentication(ABC):
 class Authentication(BaseAuthentication):
     def __init__(self, request: dict, request_parser: Type[RequestParser] = RequestParser,
                  cache=Redis) -> None:
+        print(request)
         self.request = request
         self.request_parser = request_parser(request)
         self.payload: Payload | bool | None = None

@@ -38,7 +38,7 @@ div
     created () {
       this.roomname = this.$route.params.roomname
       this.username = this.$route.query.username
-      this.connection = new WebSocket("ws://localhost:8002/" + this.roomname)
+      this.connection = new WebSocket("ws://localhost:8000/" + this.roomname)
 
       let context = this
       this.connection.onmessage = function(event) {

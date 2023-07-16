@@ -23,9 +23,10 @@ class RoomUserType(Enum):
 
 
 class RoomModel(Base):
-    id: UUID
-    film_id: UUID | None = None
+    id: UUID | None = None
+    film_id: UUID
     creator_id: UUID
+    members: list[UUID]
 
 
 class RoomUserModel(Base):
