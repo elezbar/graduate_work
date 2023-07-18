@@ -31,14 +31,17 @@ div
       message: null,
       play_pause: "Play",
       connection: null,
+      username: null,
+      user_id: 1,
       slider: 0,
       interval: null,
+      token: 'sdfvsdfvsfdv',
       chat: []
     }),
     created () {
       this.roomname = this.$route.params.roomname
       this.username = this.$route.query.username
-      this.connection = new WebSocket("ws://localhost:8000/" + this.roomname)
+      this.connection = new WebSocket("ws://127.0.0.1:8000/" + this.roomname)
 
       let context = this
       this.connection.onmessage = function(event) {
@@ -67,6 +70,9 @@ div
           context.chat = obj.chat
           context.slider = obj.slider
         }
+        if (obj.type == 'new_token' && obj.username == context.username) {
+          this.token == obj.new_token
+        }
       }
       this.connection.onopen = function() {
         context.sendInitial()
@@ -85,8 +91,9 @@ div
       sendInitial() {
         let msg = JSON.stringify({
           type: 'initial_request',
-          token: 'scdasdc',
-          username: this.username
+          token: this.token,
+          username: this.username,
+          user_id: this.user_id,
         });
         this.connection.send(msg);
         console.log('initial_request')
@@ -95,7 +102,7 @@ div
         let msg = JSON.stringify({
           type: 'slider',
           value: this.slider,
-          token: 'scdasdc',
+          token: this.token,
           username: this.username
         });
         this.connection.send(msg);
@@ -103,7 +110,8 @@ div
       sliderChangeInfo() {
         let msg = JSON.stringify({
           type: 'slider_info',
-          token: 'scdasdc',
+          token: this.token,
+          username: this.username,
           value: this.slider
         });
         this.connection.send(msg);
@@ -112,7 +120,7 @@ div
         let msg = JSON.stringify({
           type: 'message',
           username: this.username,
-          token: 'scdasdc',
+          token: this.token,
           message: this.message
         });
         this.connection.send(msg);
@@ -144,11 +152,11 @@ div
       },
       playPause () {
         if (this.play_pause == "Play") {
-          let msg = JSON.stringify({type: 'play', token: 'scdasdc', username: this.username});
+          let msg = JSON.stringify({type: 'play', token: this.token, username: this.username});
           this.connection.send(msg);
           this.playItNow()
         } else {
-          let msg = JSON.stringify({type: 'pause', token: 'scdasdc', username: this.username});
+          let msg = JSON.stringify({type: 'pause', token: this.token, username: this.username});
           this.connection.send(msg);
           this.pauseItNow()
         }

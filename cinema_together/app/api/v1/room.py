@@ -20,7 +20,6 @@ async def create_room(
         Authorization: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service),
 ):
-    print(room)
     room_id = uuid.uuid4()
     link = create_room_link(room_id)
     error = await service.create_room(
@@ -40,12 +39,12 @@ async def create_room(
 async def join_user(
         request: Request,
         room_id: str,
+        Authorization: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service)
 ):
     error = await service.connect(user=request.user, room_id=room_id)
     if error:
         return {'connection': False, 'errors': list(error)}
-
     return {'connection': 'success'}
 
 
@@ -54,6 +53,7 @@ async def join_user(
 async def disconnect_user(
         request: Request,
         room_id: str,
+        Authorization: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service)
 ):
 

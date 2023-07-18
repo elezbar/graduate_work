@@ -9,6 +9,10 @@ div
       v-text-field(
         v-model="yourName"
         label="Your name")
+
+      v-text-field(
+        v-model="yourName"
+        label="Your name")
       
       v-btn(type="submit" @click="Connect" block class="mt-2") Connect
   

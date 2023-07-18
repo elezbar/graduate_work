@@ -2,14 +2,15 @@ import logging
 from logging import config
 import uvicorn
 
-from fastapi import FastAPI, Request, Response, Security, WebSocket
+from fastapi import FastAPI, Security, WebSocket
 from fastapi.concurrency import run_until_first_complete
 from fastapi.responses import ORJSONResponse
 from fastapi.security import APIKeyHeader
 from redis import asyncio as aioredis
 
 from api.v1 import room
-from api.v1.websocket.receiver import chatroom_ws_receiver, chatroom_ws_receiver_test
+# from api.v1.websocket.receiver import chatroom_ws_receiver
+from api.v1.websocket.receiver import chatroom_ws_receiver_test
 from api.v1.websocket.sender import chatroom_ws_sender
 from core import cache
 from core.broadcast import broadcast
@@ -19,7 +20,7 @@ from core.logger import LOGGING
 
 config.dictConfig(LOGGING)
 
-api_key = APIKeyHeader(name='authorization', auto_error=False)
+api_key = APIKeyHeader(name='Authorization', auto_error=False)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

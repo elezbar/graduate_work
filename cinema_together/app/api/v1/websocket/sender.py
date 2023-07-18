@@ -9,7 +9,7 @@ async def chatroom_ws_sender(websocket, chatroom):
         async for event in subscriber:
             event_message = json.loads(event.message)
             cached_message = await get_cached_message(chatroom)
-            modified_cached_message = await modify_cached_message(event_message, cached_message)
+            modified_cached_message = await modify_cached_message(chatroom, event_message, cached_message)
             if event_message['type'] not in ['initial_request', 'initial_response']:
                 await websocket.send_text(json.dumps(event_message))
                 await set_cached_message(chatroom, modified_cached_message)

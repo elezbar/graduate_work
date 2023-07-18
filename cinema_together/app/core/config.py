@@ -18,11 +18,11 @@ class Settings(BaseSettings):
     PROJECT_PORT: int = 8000
     PROJECT_PROTOCOL: str = 'http'
 
-    DB_HOST: str = os.getenv('POSTGRES_HOST', 'localhost')
-    DB_PORT: int = os.getenv('POSTGRES_PORT', 5432)
-    DB_USERNAME: str = os.getenv('POSTGRES_USER', 'postgres')
-    DB_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', 'postgres')
-    DB_NAME: str = os.getenv('POSTGRES_DB')
+    POSTGRES_HOST: str = os.getenv('POSTGRES_HOST', 'localhost')
+    POSTGRES_PORT: int = os.getenv('POSTGRES_PORT', 5432)
+    POSTGRES_USER: str = os.getenv('POSTGRES_USER', 'postgres')
+    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', 'postgres')
+    POSTGRES_DB: str = os.getenv('POSTGRES_DB')
 
     JWT_SECRET_KEY: str = os.getenv('SECRET_KEY')
     JWT_ALG: str = os.getenv('ALGORITHM')
@@ -33,11 +33,12 @@ class Settings(BaseSettings):
     AUTH_URL: str = os.getenv('AUTH_URL', 'http://auth:8001/api/v1/authorizate')
     SECRET: str = os.getenv('SECRET_KEY', 'asdcasdvsdfbsgbdfgbsdfva343')
     ALGORITHM: str = os.getenv('ALGORITHM', 'HS256')
+    
 
     @property
     def pg_dsn(self):
-        return (f'postgresql+asyncpg://{self.DB_USERNAME}:{self.DB_PASSWORD}@'
-                f'{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}')  # noqa
+        return (f'postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@'
+                f'{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}')  # noqa
 
     @property
     def get_root_url(self):
