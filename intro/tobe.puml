@@ -1,0 +1,58 @@
+@startuml
+'!theme cerulean
+title "Архитектура сервиса 'Кино Вместе'"
+actor Пользователь as Client
+
+cloud {
+  [Nginx]
+}
+
+note top of Nginx
+Веб-сервер для проксирования запросов
+end note
+
+
+package CinemaService {
+ component room_api
+ component websocket
+ database Postgres
+ database Redis
+}
+
+
+package Notifications {
+ collections Уведомления
+}
+
+note top of Notifications
+Рассылка приглашений к
+совместному просмотру по почте
+end note
+
+room_api --> Postgres
+
+Notifications --> AuthService
+websocket --> Redis
+
+note top of CinemaService
+Api для работы с комнатой совместного просмотра фильма
+end note
+
+package AuthService {
+ component Flask
+ database AuthDB
+ database AuthRedis
+}
+note top of AuthService
+Сервис регистрации,
+ авторизации и аутентификации
+end note
+Flask --> AuthDB: "CRUD операции\n с юзерами"
+Flask --> AuthRedis: "Кэширование и\n проверка токенов"
+
+room_api --> Notifications: "номера пользователей"
+Client --> Nginx
+Nginx -> CinemaService
+CinemaService --> AuthService: "Проверка\n токена"
+
+@enduml
