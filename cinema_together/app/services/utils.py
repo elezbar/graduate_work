@@ -107,16 +107,16 @@ async def check_temp_token(message: dict, rs) -> dict | bool:
 
 async def send_invitation(link: str, list_users: list[str], access_token: str):
     """ Рассылка приглашений """
-    template = """Привет {{username}}, тебя пригласили в комнату для просмотра фильма {{link}}"""
+    template = """Привет {{username}}, тебя пригласили в комнату для просмотра фильма """ + link
     body = {
         "user_data": [{
-            "id_user": id,
+            "id_user": str(id),
             "data": {"link": link}
         } for id in list_users],
         "template": template,
         "type_notification": "email"
     }
     async with aiohttp.ClientSession() as client:
-        await client.post(settings.AUTH_URL,
+        await client.post(settings.NOTIFICATION_URL,
                           headers={'authorization': access_token},
                           json=body)

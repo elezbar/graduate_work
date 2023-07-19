@@ -17,7 +17,7 @@ bearer_token = HTTPBearer()
 @login_required()
 async def create_room(
         room: RoomModel,
-        Authorization: str | None = Header(default=None, convert_underscores=False),
+        Authorizations: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service),
 ):
     room_id = uuid.uuid4()
@@ -30,9 +30,9 @@ async def create_room(
         members=room.members
     )
     if error:
-        return {'success': False, 'errors': list(error)}
+        return {'success': False, 'errors': [error]}
     if room.members:
-        await send_invitation(link, room.mebmers, Authorization)
+        await send_invitation(link, room.members, Authorizations)
     return {'success': True, 'link': link}
 
 
@@ -46,7 +46,7 @@ async def join_user(
 ):
     error = await service.connect(user=request.user, room_id=room_id)
     if error:
-        return {'connection': False, 'errors': list(error)}
+        return {'connection': False, 'errors': [error]}
     return {'connection': 'success'}
 
 

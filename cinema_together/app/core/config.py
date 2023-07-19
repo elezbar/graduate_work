@@ -10,6 +10,7 @@ MESSAGE = {
     'chat': []
 }
 
+
 class Settings(BaseSettings):
     DEBUG: bool = True
 
@@ -33,7 +34,7 @@ class Settings(BaseSettings):
     AUTH_URL: str = os.getenv('AUTH_URL', 'http://auth:8001/api/v1/authorizate')
     SECRET: str = os.getenv('SECRET_KEY', 'asdcasdvsdfbsgbdfgbsdfva343')
     ALGORITHM: str = os.getenv('ALGORITHM', 'HS256')
-    NOTIFICATION_URL: str = os.getenv('NOTIFICATION_URL', 'http://notification_api:8000/api/v1/send_notification/send_notification/delayed')
+    NOTIFICATION_URL: str = os.getenv('NOTIFICATION_URL', 'http://notifications:8002/api/v1/send_notification/send_notification/delayed')
 
     @property
     def pg_dsn(self):

@@ -10,7 +10,6 @@ from fastapi.security import APIKeyHeader
 from redis import asyncio as aioredis
 
 from api.v1 import room
-# from api.v1.websocket.receiver import chatroom_ws_receiver
 from api.v1.websocket.receiver import chatroom_ws_receiver_test
 from api.v1.websocket.sender import chatroom_ws_sender
 from models.postgres import Base

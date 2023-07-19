@@ -86,6 +86,7 @@ class RoomService:
 
 async_pg_engine: Optional[AsyncEngine] = create_async_engine(settings.pg_dsn)
 
+
 async def get_pg_engine() -> Optional[async_pg_engine]:
     return async_pg_engine
 
