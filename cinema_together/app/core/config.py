@@ -10,6 +10,7 @@ MESSAGE = {
     'chat': []
 }
 
+
 class Settings(BaseSettings):
     DEBUG: bool = True
 
@@ -18,11 +19,11 @@ class Settings(BaseSettings):
     PROJECT_PORT: int = 8000
     PROJECT_PROTOCOL: str = 'http'
 
-    DB_HOST: str = os.getenv('POSTGRES_HOST', 'localhost')
-    DB_PORT: int = os.getenv('POSTGRES_PORT', 5432)
-    DB_USERNAME: str = os.getenv('POSTGRES_USER', 'postgres')
-    DB_PASSWORD: str = os.getenv('POSTGRES_PASSWORD', 'postgres')
-    DB_NAME: str = os.getenv('POSTGRES_DB')
+    DB_HOST: str = os.getenv('DB_HOST', 'localhost')
+    DB_PORT: int = os.getenv('DB_PORT', 5432)
+    DB_USERNAME: str = os.getenv('DB_USER', 'postgres')
+    DB_PASSWORD: str = os.getenv('DB_PASS', 'postgres')
+    DB_NAME: str = os.getenv('DB_NAME')
 
     JWT_SECRET_KEY: str = os.getenv('SECRET_KEY')
     JWT_ALG: str = os.getenv('ALGORITHM')

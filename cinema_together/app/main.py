@@ -17,7 +17,7 @@ from core import cache
 from core.broadcast import broadcast
 from core.config import settings
 from core.logger import LOGGING
-
+from services.database import create_database
 
 config.dictConfig(LOGGING)
 
@@ -31,6 +31,12 @@ app = FastAPI(
     openapi_url='/api/openapi.json',
     default_response_class=ORJSONResponse,
 )
+
+
+@app.on_event("startup")
+async def startup_event():
+    await create_database()
+
 
 app.include_router(
     room.router, prefix='/api/v1/room', tags=['Room'],
