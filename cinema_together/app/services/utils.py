@@ -117,6 +117,6 @@ async def send_invitation(link: str, list_users: list[str], access_token: str):
         "type_notification": "email"
     }
     async with aiohttp.ClientSession() as client:
-        await client.post(settings.auth_url,
+        await client.post(settings.AUTH_URL,
                           headers={'authorization': access_token},
-                          body=body)
+                          json=body)

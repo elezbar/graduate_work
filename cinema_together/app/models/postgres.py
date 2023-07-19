@@ -10,6 +10,9 @@ Base = declarative_base()
 
 class Room(Base):
     __tablename__ = 'movie_together_room'
+    __table_args__ = (
+        {'schema': 'cinema'}
+    )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4,
                 unique=True, nullable=False)
@@ -25,14 +28,15 @@ class Room(Base):
 
 class RoomUser(Base):
     __tablename__ = 'movie_together_room_users'
+    __table_args__ = (
+        UniqueConstraint('user_id', 'room_id', name='unique_room_user'),
+        {'schema': 'cinema'},
+    )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4,
                 unique=True, nullable=False)
-    room_id = Column(ForeignKey('movie_together_room.id'))
+    room_id = Column(ForeignKey(Room.id))
     user_id = Column(UUID(as_uuid=True))
     user_type = Column(String)  # создатель комнаты или простой зритель
-    temp_token = Column(String) 
+    temp_token = Column(String)
     created_at = Column(DateTime, server_default=func.now())
-
-    __table_args__ = (
-        UniqueConstraint('user_id', 'room_id', name='unique_room_user'),)

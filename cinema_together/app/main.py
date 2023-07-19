@@ -1,10 +1,9 @@
-from http import HTTPStatus
 import logging
 from logging import config
-import aiohttp
+import sqlalchemy
 import uvicorn
 
-from fastapi import FastAPI, Request, Response, Security, WebSocket
+from fastapi import FastAPI, Security, WebSocket
 from fastapi.concurrency import run_until_first_complete
 from fastapi.responses import ORJSONResponse
 from fastapi.security import APIKeyHeader
@@ -14,7 +13,9 @@ from api.v1 import room
 # from api.v1.websocket.receiver import chatroom_ws_receiver
 from api.v1.websocket.receiver import chatroom_ws_receiver_test
 from api.v1.websocket.sender import chatroom_ws_sender
+from models.postgres import Base
 from core import cache
+from services.room import async_pg_engine
 from core.broadcast import broadcast
 from core.config import settings
 from core.logger import LOGGING
@@ -45,6 +46,13 @@ async def startup() -> None:
         f'redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}'
     )
     await broadcast.connect()
+    async with async_pg_engine.begin() as conn:
+        sql = sqlalchemy.text(""" select nspname
+                  from pg_catalog.pg_namespace
+                  where nspname = 'cinema'""")
+        if not (await conn.execute(sql)).fetchone():
+            await conn.execute(sqlalchemy.schema.CreateSchema('cinema'))
+            await conn.run_sync(Base.metadata.create_all)
 
 
 @app.on_event('shutdown')

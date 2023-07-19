@@ -20,7 +20,7 @@ def login_required():
             }
             async with aiohttp.ClientSession() as client:
                 try:
-                    resp = await client.post(f'{settings.AUTH_URL}/authorizate', json=payload, headers={
+                    resp = await client.post(settings.AUTH_URL, json=payload, headers={
                         'Authorization': token
                     })
                     if resp.status == 200:
