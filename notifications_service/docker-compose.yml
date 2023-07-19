@@ -53,18 +53,8 @@ services:
     #   - pgdata:/var/lib/postgresql/data
     #   - ./database.ddl:/database.ddl
     ports:
-      - 5432:5432
+      - 5433:5433
 
-  # celery:
-  #   build: sheduler
-  #   container_name: sheduler
-  #   restart: always
-  #   depends_on:
-  #     - db
-  #     - rabbitmq
-  #     - api_notifications
-  #   env_file:
-  #     - ./.env
 
   mailhog:
     image: mailhog/mailhog

@@ -7,7 +7,7 @@ from fastapi import Header, Request
 from core.decorators import login_required
 from models.scheme import RoomModel
 from services.room import RoomService, get_room_service
-from services.utils import create_room_link
+from services.utils import create_room_link, send_invitation
 
 router = APIRouter()
 bearer_token = HTTPBearer()
@@ -31,6 +31,8 @@ async def create_room(
     )
     if error:
         return {'success': False, 'errors': list(error)}
+    if room.members:
+        await send_invitation(link, room.mebmers, Authorization)
     return {'success': True, 'link': link}
 
 

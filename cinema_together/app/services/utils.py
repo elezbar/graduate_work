@@ -1,3 +1,4 @@
+import aiohttp
 import jwt
 import orjson
 import random
@@ -102,3 +103,20 @@ async def check_temp_token(message: dict, rs) -> dict | bool:
             return new_token
     else:
         return 'qwerty1234567'
+
+
+async def send_invitation(link: str, list_users: list[str], access_token: str):
+    """ Рассылка приглашений """
+    template = """Привет {{username}}, тебя пригласили в комнату для просмотра фильма {{link}}"""
+    body = {
+        "user_data": [{
+            "id_user": id,
+            "data": {"link": link}
+        } for id in list_users],
+        "template": template,
+        "type_notification": "email"
+    }
+    async with aiohttp.ClientSession() as client:
+        await client.post(settings.auth_url,
+                          headers={'authorization': access_token},
+                          body=body)

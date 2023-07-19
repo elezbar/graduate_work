@@ -165,7 +165,7 @@ class RequestParser(BaseRequestParser):
         """
         Connects data from json and headers.
         """
-        data = None
+        data = {}
         print('REQUEST', request)
         if request:
             data = request.get_json(force=False, silent=True)

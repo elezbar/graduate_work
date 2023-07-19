@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class UnsubscribeDB(BaseModel):
     id_unsubscriber: int
     id_event: int
-    id_user: int
+    id_user: str
 
 
 class EditUnsubscribeDB(UnsubscribeDB):
@@ -13,7 +13,7 @@ class EditUnsubscribeDB(UnsubscribeDB):
 
 class AddUnsubscribeDB(BaseModel):
     id_event: int
-    id_user: int
+    id_user: str
 
 
 class RemoveUnsubscribeDB(BaseModel):

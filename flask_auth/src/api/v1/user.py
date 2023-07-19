@@ -52,7 +52,7 @@ class User(Resource):
                     query = session.query(UserDB).filter_by(username=name)
                     user = session.execute(query).one()
                     user = user[0].serialize()
-                    if user["id"] == str(what_to_do.is_anonim.user_id):
+                    if user["id"] == str(auth.get_user_id()):
                         return user, HTTPStatus.OK
             abort(HTTPStatus.UNAUTHORIZED)
         except exc.IntegrityError as e:

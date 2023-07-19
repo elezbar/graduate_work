@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     broker_password: str = Field('guest', env='BROKER_PASSWORD')
     broker_host: str = Field('rabbitmq', env='BROKER_HOST')
     broker_port: int = Field(5672, env='BROKER_PORT')
-    auth_url: str = Field('auth_service', env='AUTH_URL')
+    auth_url: str = Field('http://auth:5000/api/v1/authorizate', env='AUTH_URL')
     db_type = Field('postgresql', env='DB_TYPE')
     postgres_user: str = Field('app', env='POSTGRES_USER')
     postgres_password: str = Field('123qwe', env='POSTGRES_PASSWORD')
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     postgres_db: str = Field('notification_database', env='POSTGRES_DB')
 
     class Config:
-        env_file = "./.env"
+        env_file = "../.env"
         env_file_encoding = 'utf-8'
         env_nested_delimiter = "__"
 

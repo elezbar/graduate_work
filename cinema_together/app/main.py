@@ -1,8 +1,10 @@
+from http import HTTPStatus
 import logging
 from logging import config
+import aiohttp
 import uvicorn
 
-from fastapi import FastAPI, Security, WebSocket
+from fastapi import FastAPI, Request, Response, Security, WebSocket
 from fastapi.concurrency import run_until_first_complete
 from fastapi.responses import ORJSONResponse
 from fastapi.security import APIKeyHeader
@@ -36,6 +38,7 @@ app.include_router(
     dependencies=[Security(api_key)]
 )
 
+
 @app.on_event('startup')
 async def startup() -> None:
     cache.redis = aioredis.from_url(
@@ -43,11 +46,13 @@ async def startup() -> None:
     )
     await broadcast.connect()
 
+
 @app.on_event('shutdown')
 async def shutdown() -> None:
     if cache.redis:
         await cache.redis.close()
     await broadcast.disconnect()
+
 
 @app.websocket("/{chatroom}")
 async def chatroom_ws(chatroom: str, websocket: WebSocket):

@@ -41,11 +41,11 @@ class WorkerNotification:
             id_users.append(user['id_user'])
         for i in range(len(id_users)//1000+1):
             params = {
-                'id_user': id_users[i*1000:(i+1)*1000]
+                'id_users': id_users[i*1000:(i+1)*1000]
             }
             users = self.api_request.api_call(self.url_user, params)
             for user in users:
-                users_data[user['id_user']] = user
+                users_data[user['id']] = user
         return users_data
 
     def send_message(self, msg):

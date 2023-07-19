@@ -26,7 +26,7 @@ class ApiRequest:
     def api_call(self, url, params, method='POST', content_type='application/json', **kwargs):
         request_url = url
         headers = kwargs.get("headers", {})
-        headers.update({'Content-Type': content_type, 'Authorization': f"Bearer {self.access_token}"})
+        headers.update({'Content-Type': content_type, 'Authorization': self.access_token})
         headers["accept"] = headers.get("accept", "application/json")
 
         if content_type == ApiRequest.CONTENT_TYPE_URLENCODE:
