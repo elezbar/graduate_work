@@ -25,9 +25,9 @@ config.dictConfig(LOGGING)
 api_key = APIKeyHeader(name='Authorization', auto_error=False)
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
-    description="Всё о комнате совместного просмотра",
-    version="1.0.0",
+    title=settings.project_name,
+    description='Всё о комнате совместного просмотра',
+    version='1.0.0',
     docs_url='/api/openapi',
     openapi_url='/api/openapi.json',
     default_response_class=ORJSONResponse,
@@ -42,7 +42,7 @@ app.include_router(
 @app.on_event('startup')
 async def startup() -> None:
     cache.redis = aioredis.from_url(
-        f'redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}'
+        f'redis://{settings.redis_host}:{settings.redis_port}'
     )
     await broadcast.connect()
     async with async_pg_engine.begin() as conn:
@@ -61,21 +61,21 @@ async def shutdown() -> None:
     await broadcast.disconnect()
 
 
-@app.websocket("/{chatroom}")
+@app.websocket('/{chatroom}')
 async def chatroom_ws(chatroom: str, websocket: WebSocket):
     await websocket.accept()
     await run_until_first_complete(
-        (chatroom_ws_receiver_test, {"websocket": websocket, 'chatroom': chatroom}),
-        (chatroom_ws_sender, {"websocket": websocket, 'chatroom': chatroom}),
+        (chatroom_ws_receiver_test, {'websocket': websocket, 'chatroom': chatroom}),
+        (chatroom_ws_sender, {'websocket': websocket, 'chatroom': chatroom}),
     )
 
 
 if __name__ == '__main__':
     uvicorn.run(
         'main:app',
-        host=settings.PROJECT_HOST,
-        port=settings.PROJECT_PORT,
+        host=settings.project_host,
+        port=settings.project_port,
         log_config=LOGGING,
         log_level=logging.DEBUG,
-        reload=settings.DEBUG,
+        reload=settings.debug,
     )

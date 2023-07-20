@@ -63,5 +63,5 @@ class Redis(BaseCacheStorage):
 
 def get_redis() -> Reddis:
     if not redis:
-        raise Exception("Redis not initialized yet.")
+        raise Exception('Redis not initialized yet.')
     return redis
