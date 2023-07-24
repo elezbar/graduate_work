@@ -4,7 +4,7 @@ from pydantic import BaseModel, validator
 
 
 class InstantNotification(BaseModel):
-    id_user: list[int]
+    id_user: list[str]
     template: str
     type_notification: str
 
@@ -19,7 +19,7 @@ class InstantNotification(BaseModel):
 
 
 class UserNotificationData(BaseModel):
-    id_user: int
+    id_user: str
     data: dict[str, Any]
 
 

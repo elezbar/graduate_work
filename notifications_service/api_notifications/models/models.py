@@ -35,7 +35,7 @@ class Unsubscribe(BaseModel):
     )
     id_unsubscribe: Mapped[int] = mapped_column(primary_key=True)
     id_event: Mapped[int] = mapped_column(ForeignKey(Event.id_event, ondelete="CASCADE"))
-    id_user: Mapped[int]
+    id_user: Mapped[str]
 
 
 class Notification(BaseModel):
@@ -46,7 +46,7 @@ class Notification(BaseModel):
     id_notification: Mapped[int] = mapped_column(primary_key=True)
     id_content: Mapped[Optional[int]]
     id_event: Mapped[int] = mapped_column(ForeignKey(Event.id_event, ondelete="CASCADE"))
-    id_user: Mapped[Optional[int]]
+    id_user: Mapped[Optional[str]]
     last_update: Mapped[Optional[datetime]]
     last_notification_send: Mapped[Optional[datetime]]
 
@@ -57,7 +57,7 @@ class SendedNotification(BaseModel):
         {'schema': 'notification'}
     )
     id_sended_notification: Mapped[int] = mapped_column(primary_key=True)
-    id_user: Mapped[int]
+    id_user: Mapped[str]
     type_notification: Mapped[str]
     message: Mapped[str] = mapped_column(Text)
     date_send: Mapped[datetime] = mapped_column(default=func.now())

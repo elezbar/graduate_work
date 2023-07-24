@@ -44,7 +44,7 @@ class Authorizate(Resource):
                   type: boolean
         """
         try:
-            _, args = RequestParser.request_pre_parser(request, parser, None, "api/v1/authorizate", None)
+            _, args = RequestParser.request_pre_parser(request, parser, 'post', "api/v1/authorizate", ["user"])
             print(_, args)
             auth = Authentication(args)
             what_to_do = auth.authenticate()

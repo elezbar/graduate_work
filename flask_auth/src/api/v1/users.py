@@ -25,11 +25,21 @@ class Users(Resource):
 
     decorators = [session]
 
-    def get(self, session):
+    def post(self, session):
         """
-        Getting list of users
+        Getting list of users by id
         ---
-        responses:
+         parameters:
+        - in: body
+          description: List id_users
+          schema:
+            type: object
+            required:
+              - id_users
+              - username
+            properties:
+              id_users:
+                type: list[string]
           200:
             description: Users list
             schema:
@@ -39,15 +49,19 @@ class Users(Resource):
                   type: string
                 username:
                   type: string
+                email:
+                  type: string
         """
         try:
-            _, args = RequestParser.request_pre_parser(None, parser, "get", "api/v1/user", ["user"])
+            data, args = RequestParser.request_pre_parser(request, parser, "post", "api/v1/users", ["user"])
             auth = Authentication(args)
             what_to_do = auth.authenticate()
             authorization = Authorization(what_to_do)
             if not what_to_do.is_anonim:
                 if authorization.is_authorise():
                     query = session.query(UserDB)
+                    if data and data.get('id_users'):
+                        query = query.filter(UserDB.id.in_(data['id_users']))
                     users = session.execute(query).all()
                     result = []
                     for user in users:
@@ -60,63 +74,6 @@ class Users(Resource):
             abort(HTTPStatus.CONFLICT)
         except exc.NoResultFound as e:
             logger.error(f"Users not found: {e}")
-            abort(HTTPStatus.NOT_FOUND)
-        except ValidationError as e:
-            logger.error(f"Incorrect input data: {e}")
-            abort(HTTPStatus.OK)
-
-    def post(self, session):
-        """
-        Creating User
-        ---
-        parameters:
-        - in: body
-          description: User object
-          schema:
-            type: object
-            required:
-              - username
-              - password
-            properties:
-              username:
-                type: string
-              password:
-                type: string
-        responses:
-          200:
-            description: Created User
-            schema:
-              properties:
-                id:
-                  type: string
-                username:
-                  type: string
-        """
-        try:
-            data, args = RequestParser.request_pre_parser(request, parser, "post", "api/v1/user", ["user"])
-            auth = Authentication(args)
-            what_to_do = auth.authenticate()
-            if not what_to_do.is_anonim:
-                if BaseRoles.SUPERUSER.value in what_to_do.get_roles_str():
-                    query = session.query(UserDB).filter_by(username=data["username"])
-                    objs = session.query(query.exists())
-                    objs = session.execute(objs)
-                    if not objs.first()[0]:
-                        user = UserDB(
-                            username=data["username"], password=PasswordManager.generate_hash(password=data["password"])
-                        )
-                        session.add(user)
-                        session.commit()
-                        user_role = UserRole(user_id=user.id, role_id=BaseRoles.REGULAR.value)
-                        session.add(user_role)
-                        session.commit()
-                        return user.serialize(), HTTPStatus.CREATED
-            abort(HTTPStatus.UNAUTHORIZED)
-        except exc.IntegrityError as e:
-            logger.error(f"Duplicate key value violates unique constraint: {e}")
-            abort(HTTPStatus.CONFLICT)
-        except exc.NoResultFound as e:
-            logger.error(f"User not found: {e}")
             abort(HTTPStatus.NOT_FOUND)
         except ValidationError as e:
             logger.error(f"Incorrect input data: {e}")

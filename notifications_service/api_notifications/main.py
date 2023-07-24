@@ -59,17 +59,17 @@ async def shutdown() -> None:
         b.close()
 
 
-# @app.middleware("http")
-# async def auth_middleware(request: Request, call_next):
-#     if request.url.path in [app.docs_url, app.openapi_url]:
-#         return await call_next(request)
-#     headers = request.headers
-#     async with aiohttp.ClientSession() as client:
-#         resp = await client.get(settings.auth_url, headers=headers)
-#         if resp.status == 200:
-#             response = await call_next(request)
-#             return response
-#         return Response(status_code=HTTPStatus.UNAUTHORIZED)
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    if request.url.path in [app.docs_url, app.openapi_url]:
+        return await call_next(request)
+    headers = {k: v for k, v in request.headers.items()}
+    async with aiohttp.ClientSession() as client:
+        resp = await client.post(settings.auth_url, headers={'authorization': headers.get('authorization')})
+        if resp.status == 200:
+            response = await call_next(request)
+            return response
+        return Response(status_code=HTTPStatus.UNAUTHORIZED)
 
 
 app.include_router(event.router, prefix='/api/v1/event', tags=['event'])

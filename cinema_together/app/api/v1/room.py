@@ -7,7 +7,7 @@ from fastapi import Header, Request
 from core.decorators import login_required
 from models.scheme import RoomModel
 from services.room import RoomService, get_room_service
-from services.utils import create_room_link
+from services.utils import create_room_link, send_invitation
 
 router = APIRouter()
 bearer_token = HTTPBearer()
@@ -17,7 +17,7 @@ bearer_token = HTTPBearer()
 @login_required()
 async def create_room(
         room: RoomModel,
-        Authorization: str | None = Header(default=None, convert_underscores=False),
+        authorizations: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service),
 ):
     room_id = uuid.uuid4()
@@ -30,7 +30,9 @@ async def create_room(
         members=room.members
     )
     if error:
-        return {'success': False, 'errors': list(error)}
+        return {'success': False, 'errors': [error]}
+    if room.members:
+        await send_invitation(link, room.members, authorizations)
     return {'success': True, 'link': link}
 
 
@@ -39,12 +41,12 @@ async def create_room(
 async def join_user(
         request: Request,
         room_id: str,
-        Authorization: str | None = Header(default=None, convert_underscores=False),
+        authorizations: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service)
 ):
     error = await service.connect(user=request.user, room_id=room_id)
     if error:
-        return {'connection': False, 'errors': list(error)}
+        return {'connection': False, 'errors': [error]}
     return {'connection': 'success'}
 
 
@@ -53,7 +55,7 @@ async def join_user(
 async def disconnect_user(
         request: Request,
         room_id: str,
-        Authorization: str | None = Header(default=None, convert_underscores=False),
+        authorizations: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service)
 ):
 

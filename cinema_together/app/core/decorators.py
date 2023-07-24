@@ -11,17 +11,17 @@ def login_required():
     def wrapper(func):
         @functools.wraps(func)
         async def inner(*args, **kwargs):
-            token = kwargs.get('Authorization')
+            token = kwargs.get('authorizations')
             room = kwargs.get('room')
             payload = {
-                "RequestedObjTypes": "movie",
-                "RequestType": "get",
-                "RequestedObjId": str(room.film_id)
+                'RequestedObjTypes': 'movie',
+                'RequestType': 'get',
+                'RequestedObjId': str(room.film_id)
             }
             async with aiohttp.ClientSession() as client:
                 try:
-                    resp = await client.post(f'{settings.AUTH_URL}/authorizate', json=payload, headers={
-                        'Authorization': token
+                    resp = await client.post(f'{settings.auth_url}', json=payload, headers={
+                        'authorization': token
                     })
                     if resp.status == 200:
                         return await func(*args, **kwargs)

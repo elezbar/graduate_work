@@ -11,6 +11,7 @@ class User(BaseModel):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
     username = Column(String(80), unique=True, nullable=False)
+    email = Column(String(255))
     _password = Column('password', String(255), nullable=False)
 
     def __str__(self) -> str:

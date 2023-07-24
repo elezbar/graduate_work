@@ -23,7 +23,7 @@ services:
     build: .
     container_name: flask_auth
     command: >
-      bash -c "python ping.py && alembic upgrade head && flask utils_bp init_db && pytest"
+      bash -c "python ping.py && alembic upgrade head && flask utils_bp init_db && python3 -u pywsgi.py"
     depends_on:
       - auth_db
       - redis

@@ -6,6 +6,6 @@ from core.config import config
 
 app = create_app()
 
-monkey.patch_all()
+# monkey.patch_all()
 http_server = WSGIServer((config.flask.HOST, config.flask.PORT), app)
 http_server.serve_forever()

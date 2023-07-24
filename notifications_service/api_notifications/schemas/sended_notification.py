@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 
 class AddSendedNotification(BaseModel):
-    id_user: int
+    id_user: str
     type_notification: str
     message: str
     date_send: datetime

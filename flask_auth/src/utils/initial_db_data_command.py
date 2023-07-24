@@ -20,10 +20,10 @@ def create_db_initial_data(session):
     role5 = models.Role(id="f8f5ee59-af86-4fd3-a11f-75d233dbd7fa", name="superuser")
 
     password = PasswordManager.generate_hash(password="qwerty100500")
-    user1 = models.User(id="e5fcf716-4121-4b64-b23b-b6d63a14a850", username="username1", _password=password)
-    user2 = models.User(id="e5fcf716-4121-4b64-b23b-b6d63a14a851", username="username2", _password=password)
-    user3 = models.User(id="e5fcf716-4121-4b64-b23b-b6d63a14a852", username="username3", _password=password)
-    user4 = models.User(id="e5fcf716-4121-4b64-b23b-b6d63a14a853", username="username4", _password=password)
+    user1 = models.User(id="e5fcf716-4121-4b64-b23b-b6d63a14a850", username="username1", _password=password, email='username1@example.com')
+    user2 = models.User(id="e5fcf716-4121-4b64-b23b-b6d63a14a851", username="username2", _password=password, email='username1@example.com')
+    user3 = models.User(id="e5fcf716-4121-4b64-b23b-b6d63a14a852", username="username3", _password=password, email='username1@example.com')
+    user4 = models.User(id="e5fcf716-4121-4b64-b23b-b6d63a14a853", username="username4", _password=password, email='username1@example.com')
 
     user_role1 = models.UserRole(user_id=user1.id, role_id=role5.id)
     user_role2 = models.UserRole(user_id=user2.id, role_id=role2.id)
