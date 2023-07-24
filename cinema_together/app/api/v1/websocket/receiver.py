@@ -34,7 +34,8 @@ async def chatroom_ws_receiver_test(websocket, chatroom):
         print(received_message)
         # try:
         if received_message['token']:
-            new_token = await check_temp_token(received_message, None)
+            # new_token = await check_temp_token(received_message, None)
+            new_token = 'qweqweqweqweqweqweqwe123'
             if new_token:
                 if received_message['type'] == 'slider_info':
                     cached_message = await get_cached_message(chatroom)

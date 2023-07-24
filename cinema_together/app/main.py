@@ -51,6 +51,7 @@ async def shutdown() -> None:
 
 @app.websocket("/{chatroom}")
 async def chatroom_ws(chatroom: str, websocket: WebSocket):
+    print(chatroom)
     await websocket.accept()
     await run_until_first_complete(
         (chatroom_ws_receiver_test, {"websocket": websocket, 'chatroom': chatroom}),
