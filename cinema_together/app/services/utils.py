@@ -101,8 +101,7 @@ async def check_temp_token(message: dict, rs) -> dict | bool:
             new_token = get_random_string(16)
             await set_cache(message['user_id'], new_token)
             return new_token
-    else:
-        return 'qwerty1234567'
+    return 'qwerty1234567'
 
 
 async def send_invitation(link: str, list_users: list[str], access_token: str):

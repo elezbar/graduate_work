@@ -10,13 +10,12 @@ services:
     restart: always
     expose:
       - '5432'
-    ports:
-      - 5432:5432
   
   worker:
     build: ./notifications_service/worker
     container_name: worker
     restart: always
+    hostname: worker
     depends_on:
       - db
       - rabbitmq
@@ -25,8 +24,8 @@ services:
       - ./.env
     volumes:
       - ./notifications_service/worker:/worker
-    ports:
-      - 5678:5678 
+    expose:
+      - '5678'
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -35,9 +34,9 @@ services:
     restart: always
     env_file:
       - ./.env
-    ports:
-      - 5672:5672
-      - 15672:15672
+    expose:
+      - '5672'
+      - '15672'
 
   redis:
     image: redis:7.0.5
@@ -46,8 +45,6 @@ services:
     restart: always
     expose:
       - "6379"
-    ports:
-      - 6379:6379
 
   cinema_together:
     build: ./cinema_together/.
@@ -61,10 +58,8 @@ services:
     - ./cinema_together/app:/opt/app
     env_file:
       - ./.env
-    ports:
-      - 8000:8000
-    # expose:
-    #   - 8000
+    expose:
+      - "8000"
 
   auth:
     build: ./flask_auth
@@ -80,11 +75,9 @@ services:
       - ./flask_auth/src:/opt/app/src
     env_file:
       - ./.env
-    ports:
-      - 8001:8001
-      - 5681:5681
-    # expose:
-    #   - 8001
+    expose:
+      - "8001"
+      - "5681"
 
   notifications:
     build: ./notifications_service/api_notifications
@@ -98,27 +91,25 @@ services:
       - ./notifications_service/api_notifications:/opt/app
     env_file:
       - ./.env
-    ports:
-      - 8002:8002
-    # expose:
-    #   - 8002
+    expose:
+      - "8002"
 
-  # nginx:
-  #   build: ./nginx
-  #   container_name: nginx
-  #   restart: always
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-  #     - ./nginx/site.conf:/etc/nginx/conf.d/site.conf
-  #     - ./nginx/data:/data/
-  #   depends_on:
-  #     - cinema_together
-  #     # - notifications
-  #     - auth
-  #   ports:
-  #     - "8000:8000"
-  #     - "8001:8001"
-  #     # - "8002:8002"
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/site.conf:/etc/nginx/conf.d/site.conf
+      - ./nginx/data:/data/
+    depends_on:
+      - cinema_together
+      - notifications
+      - auth
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
 
   mailhog:
     image: mailhog/mailhog
@@ -126,4 +117,3 @@ services:
     ports:
       - "8025:8025"
       - "1025:1025"
-# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZTVmY2Y3MTYtNDEyMS00YjY0LWIyM2ItYjZkNjNhMTRhODUwIiwicm9sZXMiOiJmOGY1ZWU1OS1hZjg2LTRmZDMtYTExZi03NWQyMzNkYmQ3ZmEiLCJpYXQiOjE2ODk3MDkwNjMuMzEwMzU1LCJleHAiOjI2OTEwMDUwNjMuMzEwMzU1LCJ0b2tlbl90eXBlIjoiYWNjZXNzIn0.XkSHaBY7MTKUbFI9BtODf5LO_igE90syeNAh_WDrc5Y
