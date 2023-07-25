@@ -20,6 +20,11 @@ async def create_room(
         authorizations: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service),
 ):
+    """
+        Создание к указанной комнате для просмотра фильма:
+        - **room**: Данные для создания комнаты
+        - **authorizations**: Токен авторизации
+    """
     room_id = uuid.uuid4()
     link = create_room_link(room_id)
     error = await service.create_room(
@@ -44,6 +49,11 @@ async def join_user(
         authorizations: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service)
 ):
+    """
+        Подключение к указанной комнате для просмотра фильма:
+            - **room_id**: ID комнаты
+            - **authorizations**: Токен авторизации
+    """
     error = await service.connect(user=request.user, room_id=room_id)
     if error:
         return {'connection': False, 'errors': [error]}
@@ -58,7 +68,12 @@ async def disconnect_user(
         authorizations: str | None = Header(default=None, convert_underscores=False),
         service: RoomService = Depends(get_room_service)
 ):
+    """
+    Выход из указанной комнаты для просмотра фильма:
 
+    - **room_id**: ID комнаты
+    - **authorizations**: Токен авторизации
+    """
     result = await service.disconnect_user(user=request.user, room_id=room_id)
 
     if not result:
